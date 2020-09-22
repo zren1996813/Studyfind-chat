@@ -1,5 +1,5 @@
-import React from './node_modules/react';
-import * as firebase from './node_modules/firebase';
+import React from 'react';
+import * as firebase from 'firebase';
 var firebaseConfig = {
     apiKey: "AIzaSyDnykWYSIsAmNZyL2ud2Y-gClJGu-gebiU",
     authDomain: "chat-app-new-8caac.firebaseapp.com",
