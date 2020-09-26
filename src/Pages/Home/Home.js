@@ -8,7 +8,8 @@ export default class Homepage extends Component{
             <div>
                 <Header/>
                 <div class="splash">
-                    <h1>Web Chat</h1>
+                    <h1>You are using a Web Chat</h1>
+                    <p>This Web Chat is developed by StudyFind. LOL</p>
                 </div>
             </div>
         )
