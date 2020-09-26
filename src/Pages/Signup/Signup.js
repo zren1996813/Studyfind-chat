@@ -6,28 +6,23 @@ import {Card} from 'react-bootstrap'
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 import LoginString from '../Login/LoginString';
 import Header from '../../Components/Header';
 export default class Signup extends Component{
-    constructor(){
-        super();
-        this.state = {
+
+    state = {
             email:"",
             password:"",
             name:"",
             error:null
-        }
-        this.handlechange = this.handlechange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
     }
-    handlechange(event) {
+
+    handlechange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
         });
     }
-    async handleSubmit(event) {
+    handleSubmit = async (event) => {
         const {name,password,email} = this.state;
         event.preventDefault();
         try{
@@ -37,19 +32,9 @@ export default class Signup extends Component{
                 .add({
                     name,
                     id:result.user.uid,
-                    email,
-                    password,
                     URL:'',
                     messages:[{notificationId:"", number:0}]
                 }).then((docRef)=>{
-                    localStorage.setItem(LoginString.ID,result.user.uid);
-                    localStorage.setItem(LoginString.Name, name);
-                    localStorage.setItem(LoginString.Email, email);
-                    localStorage.setItem(LoginString.Password, password);
-                    localStorage.setItem(LoginString.PhotoUrl,"");
-                    localStorage.setItem(LoginString.UPLOAD_CHANGED, "state_changed");
-                    localStorage.setItem(LoginString.Description, "");
-                    localStorage.setItem(LoginString.FirebaseDocumentID, docRef.id);
                     this.setState({
                         name:'',
                         password:'',
