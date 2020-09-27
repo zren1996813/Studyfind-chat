@@ -17,7 +17,7 @@ export default class Signup extends Component{
             error:null
     }
 
-    handlechange = (event) => {
+    handleChange = (event) => {
         this.setState({
             [event.target.name]: event.target.value
         });
@@ -47,8 +47,11 @@ export default class Signup extends Component{
                 })
             })
         }
+        // Todo: the error parts
         catch(error){
-            document.getElementyByID('1').innerHTML = "Error in signing up please try again"
+            this.setState({
+                error: "error"
+            })
         }
     }
     render(){
@@ -71,17 +74,6 @@ export default class Signup extends Component{
             <div>
                 <Header/>
                 <CssBaseline/>
-                {/* <Card style = {Signinsee}>
-                    <div>
-                        <Typography component = "h1" variant = "h5">
-                            Sign up
-                            To
-                        </Typography>
-                    </div>
-                    <div>
-
-                    </div>
-                </Card> */}
                 <Card className='formacontrooutside'>
                     <form className = "customform" noValidate onSubmit={this.handleSubmit}>
                         
@@ -95,7 +87,7 @@ export default class Signup extends Component{
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        onChange={this.handlechange}
+                        onChange={this.handleChange}
                         value={this.state.email}
                         />  
                     
@@ -110,7 +102,7 @@ export default class Signup extends Component{
                         type="password"
                         autoComplete="current-password"
                         autoFocus
-                        onChange={this.handlechange}
+                        onChange={this.handleChange}
                         value={this.state.password}
                     />
                     <TextField
@@ -123,7 +115,7 @@ export default class Signup extends Component{
                         name="name"
                         autoComplete="name"
                         autoFocus
-                        onChange={this.handlechange}
+                        onChange={this.handleChange}
                         value={this.state.name}
                     />
                     <div className="CenterAlignItems">
