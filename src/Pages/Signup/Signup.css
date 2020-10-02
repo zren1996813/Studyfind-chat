@@ -92,3 +92,13 @@ border-radius: 10px;
     display: flex;
     margin-left: 150px;
   }
+.signUpText {
+    color: black;
+    font-size: 20px;
+    margin-left:35px;
+}
+.passwordField{
+    color: black;
+    font-size: 20px;
+    margin-left:0px;
+}
