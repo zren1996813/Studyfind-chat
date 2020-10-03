@@ -16,7 +16,15 @@ function Login({ history }) {
     var provider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithPopup(provider)
     .then(data => {
-        alert('Sign in successful!')
+        if (data.additionalUserInfo.isNewUser){
+            firebase.firestore().collection('users')
+                .add({
+                    name: data.additionalUserInfo.profile.name,
+                    id: data.user.uid,
+                    URL:'',
+                    messages:[{notificationId:"", number:0}]
+                })
+        }
         history.push('/chat');
       })
       .catch(error => {
@@ -29,6 +37,15 @@ function Login({ history }) {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
     .then(data => {
+        if (data.additionalUserInfo.isNewUser){
+            firebase.firestore().collection('users')
+                .add({
+                    name: data.additionalUserInfo.profile.name,
+                    id: data.user.uid,
+                    URL:'',
+                    messages:[{notificationId:"", number:0}]
+                })
+        }
         alert('Sign in successful!')
         history.push('/chat');
       })
