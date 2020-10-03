@@ -11,7 +11,8 @@ function Login({ history }) {
     password: '',
     name: ''
   });
-  const signInWithFacebook = () => {
+  const signInWithFacebook = event => {
+    event.preventDefault();
     var provider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithPopup(provider)
     .then(data => {
@@ -23,7 +24,8 @@ function Login({ history }) {
       })
 
   }
-  const signInWithGoogle= () => {
+  const signInWithGoogle= event => {
+    event.preventDefault();
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider)
     .then(data => {
