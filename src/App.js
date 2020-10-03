@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Route, 
+  Route,
   BrowserRouter as Router,
   Switch,
 } from  'react-router-dom';
@@ -29,42 +29,40 @@ class App extends Component{
   constructor() {
     super();
   }
-  
+
   render(){
     return (
       <Router>
         <ToastContainer
-          autoClose = {2000}
-          hideProgressBar = {true}
-          position = {toast.POSITION.BOTTOM_CENTER}
+          autoClose={2000}
+          hideProgressBar={true}
+          position={toast.POSITION.BOTTOM_CENTER}
         />
         <Switch>
           <Route
           exact
-          path = "/"
-          render = { props => <Home {...props}/>}/>
+          path="/"
+          render={ props => <Home {...props}/>}/>
 
           <Route
-          path = "/login"
-          render = {props => <Login showToast={this.showToast}{...props}/>}
+          path="/login"
+          render={props => <Login showToast={this.showToast}{...props}/>}
           />
 
           <Route
-          path = "/Profile"
-          render = {props => <Profile showToast={this.showToast}{...props}/>}
-          />  
-
-          <Route
-          path = "/signup"
-          render = {props => <Signup showToast={this.showToast}{...props}/>}
+          path="/Profile"
+          render={props => <Profile showToast={this.showToast}{...props}/>}
           />
 
           <Route
-          path = "/chat"
-          render = {props => <Chat showToast={this.showToast}{...props}/>}
+          path="/signup"
+          render={props => <Signup showToast={this.showToast}{...props}/>}
           />
 
-          
+          <Route
+          path="/chat"
+          render={props => <Chat showToast={this.showToast}{...props}/>}
+          />
         </Switch>
       </Router>
     )

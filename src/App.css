@@ -8,3 +8,7 @@ button:focus {
 img:active {
   opacity: 0.5;
 }
+
+* {
+  box-sizing: border-box;
+}
