@@ -49,7 +49,7 @@ exports.detectLanguage = functions.https.onCall((data, context) => {
 //https://cloud.google.com/translate/docs/advanced/quickstart#translate_v3_translate_text-nodejs
 exports.translateText = functions.https.onCall((data, context) => {
 
-  const { text, target } = data;
+  const { text, origin, target } = data;
 
   const projectId = 'chat-app-new-8caac';
   const location = 'global';
@@ -65,8 +65,8 @@ exports.translateText = functions.https.onCall((data, context) => {
       parent: `projects/${projectId}/locations/${location}`,
       contents: [text],
       mimeType: 'text/plain', // mime types: text/plain, text/html
-      sourceLanguageCode: 'en',
-      targetLanguageCode: 'sr-Latn',
+      sourceLanguageCode: origin,
+      targetLanguageCode: target,
     };
 
     try {
