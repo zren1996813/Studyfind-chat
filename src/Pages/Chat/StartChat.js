@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 // const colors = {
@@ -9,21 +9,33 @@ import styled from 'styled-components'
 //   yellow: 'rgb(239, 131, 23)',
 // }
 
-function ChatBox({ id, name, time, last, theme, unread, current, setCurrent, }) {
-  const initials = name.split(' ').map(word => word[0].toUpperCase())
-  const UNREAD = unread && <Unread className="fa fa-circle"></Unread>
+function StartChat({ id, name, time, last, theme, unread, current, setCurrent, }) {
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if(active) document.getElementById("new").focus();
+  }, [active])
 
   return (
-    <Box current={current} onClick={() => setCurrent(id)}>
-      <Icon theme={theme}>{ initials }</Icon>
-      <Info>
-        <Main>
-          <Name> {name} </Name>
-          { UNREAD }
-          <Date> {time} </Date>
-        </Main>
-        <Last unread={unread} theme={theme}> {last} </Last>
-      </Info>
+    <Box onClick={() => setActive(true)}>
+      <Icon><i className="fa fa-plus" /></Icon>
+      {
+        active
+        ? (
+          <>
+            <Input id="new" placeholder="Type email here..." />
+            <Button>Add</Button>
+          </>
+        )
+        : (
+          <>
+            <Info>
+              <Name>New Chat</Name>
+              <Last>Find users by their email</Last>
+            </Info>
+          </>
+        )
+      }
     </Box>
   )
 }
@@ -66,14 +78,11 @@ const Last = styled.div`
   font-weight: ${props => props.unread && '600'};
 `
 
-const Main = styled.div`
+const Name = styled.div`
   font-size: 1rem;
   font-weight: 500;
   display: flex;
   align-items: center;
-`
-
-const Name = styled.div`
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -102,30 +111,32 @@ const Icon = styled.div`
   align-items: center;
   font-weight: 700;
   font-size: 1rem;
-  background: rgb(200, 200, 200);
+  color: rgb(0, 0, 0, 0.4);
+  background: rgb(0, 0, 0, 0.1);
   border-radius: 100px;
-  background: rgb(187, 248, 223);
-  color: rgb(40, 162, 111);
-
-  color: ${props => {
-    switch(props.theme) {
-      case 'green': return 'rgb(40, 162, 111)'
-      case 'blue': return 'rgb(117, 150, 209)'
-      case 'red': return 'rgb(227, 119, 129)'
-      case 'purple': return 'rgb(108, 55, 214)'
-      case 'yellow': return 'rgb(239, 131, 23)'
-    }
-  }};
-
-  background: ${props => {
-    switch(props.theme) {
-      case 'green': return 'rgb(187, 248, 223)'
-      case 'blue': return 'rgb(223, 235, 255)'
-      case 'red': return 'rgb(255, 231, 237)'
-      case 'purple': return 'rgb(236, 229, 251)'
-      case 'yellow': return 'rgb(255, 233, 194)'
-    }
-  }};
 `
 
-export default ChatBox
+const Input = styled.input`
+  border: none;
+  padding: 10px;
+  font-size: 1rem;
+  outline: none;
+
+  ::placeholder {
+    font-weight: 500;
+  }
+`;
+
+const Button = styled.button`
+  cursor: pointer;
+  color: rgb(0, 0, 0, 0.5);
+  background: rgb(0, 0, 0, 0.1);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 5px;
+
+`;
+
+export default StartChat

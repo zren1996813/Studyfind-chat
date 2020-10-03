@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import Message from './Message';
+
 const colors = {
   green: 'rgb(40, 162, 111)',
   blue: 'rgb(117, 150, 209)',
@@ -11,6 +13,53 @@ const colors = {
 
 function Chat({ selected }) {
   const [theme, setTheme] = useState('purple');
+  const [messages, setMessages] = useState([
+    {
+      user: 'fieuwhguiherghl',
+      time: '9:08pm',
+      text: 'Lorem Ipsum is simply dummy text',
+    },
+    {
+      user: 'weihfuihewufiuh',
+      time: '9:08pm',
+      text: 'Printing and typesetting industry',
+    },
+    {
+      user: 'weihfuihewufiuh',
+      time: '9:08pm',
+      text: 'Industry\'s standard dummy text ever since the 1500s',
+    },
+    {
+      user: 'fieuwhguiherghl',
+      time: '9:08pm',
+      text: 'Unknown printer',
+    },
+    {
+      user: 'fieuwhguiherghl',
+      time: '9:08pm',
+      text: 'Type specimen book',
+    },
+    {
+      user: 'weihfuihewufiuh',
+      time: '9:08pm',
+      text: 'Leap into electronic typesetting, remaining essentially unchanged',
+    },
+    {
+      user: 'fieuwhguiherghl',
+      time: '9:08pm',
+      text: 'It was popularised in the 1960s with the release of Letrase',
+    },
+    {
+      user: 'weihfuihewufiuh',
+      time: '9:08pm',
+      text: 'Sheets containing Lorem Ipsum passages',
+    },
+    {
+      user: 'weihfuihewufiuh',
+      time: '9:08pm',
+      text: 'More recently with desktop',
+    }
+  ]);
 
   useEffect(() => {
     setTheme(selected.theme);
@@ -35,17 +84,7 @@ function Chat({ selected }) {
         </Theme>
       </Header>
       <Messages id="messages" theme={theme}>
-        <Message theme={theme}>Lorem Ipsum is simply dummy text <Time>9:08 pm</Time></Message>
-        <Message theme={theme} you>Printing and typesetting industry <Time>9:08 pm</Time></Message>
-        <Message theme={theme} you>Industry's standard dummy text ever since the 1500s <Time>9:08 pm</Time></Message>
-        <Message theme={theme}>Unknown printer <Time>9:08 pm</Time></Message>
-        <Message theme={theme}>Type specimen book <Time>9:08 pm</Time></Message>
-        <Message theme={theme} you>Leap into electronic typesetting, remaining essentially unchanged <Time>9:08 pm</Time></Message>
-        <Message theme={theme}>It was popularised in the 1960s with the release of Letrase <Time>9:08 pm</Time></Message>
-        <Message theme={theme}>Sheets containing Lorem Ipsum passages  <Time>9:08 pm</Time></Message>
-        <Message theme={theme} you>More recently with desktop <Time>9:08 pm</Time></Message>
-        <Message theme={theme}>Publishing software like Aldus PageMaker <Time>9:08 pm</Time></Message>
-        <Message theme={theme} you>Including versions of Lorem Ipsum <Time>9:08 pm</Time></Message>
+        {messages.map(message => <Message theme={theme} {...message} />)}
       </Messages>
       <Footer>
         <Type placeholder="Type your message here..." />
@@ -127,32 +166,6 @@ const Messages = styled.div`
   background: ${props => colors[props.theme]};
 
   background: white;
-`
-
-const Message = styled.div`
-  position: relative;
-  font-weight: 1rem;
-  max-width: 80%;
-  line-height: 1.5;
-  font-size: 0.9rem;
-  padding: 10px;
-  padding-bottom: 15px;
-  border-radius: 5px;
-
-  color: ${props => colors[props.theme]};
-
-  background: ${props => {
-    switch(props.theme) {
-      case 'green': return 'rgb(187, 248, 223)'
-      case 'blue': return 'rgb(223, 235, 255)'
-      case 'red': return 'rgb(255, 231, 237)'
-      case 'purple': return 'rgb(236, 229, 251)'
-      case 'yellow': return 'rgb(255, 233, 194)'
-    }
-  }};
-  color: ${props => !props.you && 'rgb(120, 120, 120)'};
-  background: ${props => !props.you && 'rgb(245, 245, 245)'};
-  align-self: ${props => props.you ? 'flex-end' : 'flex-start'};
 `
 
 const Time = styled.span`
