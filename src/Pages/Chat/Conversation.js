@@ -65,10 +65,10 @@ function Chat({ selected }) {
     setTheme(selected.theme);
   }, [selected])
 
-  window.onload = () => {
+  useEffect(() => {
     const objDiv = document.getElementById("messages");
     objDiv.scrollTop = objDiv.scrollHeight;
-  }
+  }, [])
 
   const colors = ['purple', 'blue', 'green', 'yellow', 'red']
 

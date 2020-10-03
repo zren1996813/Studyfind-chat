@@ -19,7 +19,6 @@ function Chat() {
     <Body>
       <Header>
         <Logo> Fireside </Logo>
-        <New> + New Chat </New>
       </Header>
       <Main>
         <ChatList current={current} list={list} setCurrent={setCurrent} />

@@ -1,86 +1,109 @@
 import React, {useState, Component} from 'react';
-import "./Signup.css";
-import { auth, database } from "../../Services/firebase";
-import {Card} from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { auth, database } from "../../firebase";
+import styled from 'styled-components';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import LoginString from '../Login/LoginString';
+import { Link, useHistory } from 'react-router-dom';
+
 import Header from '../../Components/Header';
-export default function Signup({history}){
 
-    const [inputs,setInputs] = useState({
-      email: '',
-      password: '',
-      name: '',
-    });
+function Signup(){
+  const history = useHistory();
 
-    const handleInput = event => {
-      setInputs({...inputs, [event.target.id]: event.target.value});
-    }
-    const handleSubmit = event => {
-      event.preventDefault()
-      auth.createUserWithEmailAndPassword(inputs.email, inputs.password)
-      .then(data => {
-        const { name, email } = inputs;
-        database.ref('users/' + data.user.uid)
-        .set({ name, email })
-        .then(() => history.push('/chat'));
-      })
-      .catch(error => {
-        alert("Eroor occured: " + error.message);
-      })
-    }
+  const [inputs,setInputs] = useState({
+    email: '',
+    password: '',
+    name: '',
+  });
+
+  const handleInput = event => {
+    setInputs({...inputs, [event.target.id]: event.target.value});
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    auth.createUserWithEmailAndPassword(inputs.email, inputs.password)
+    .then(data => {
+      const { name, email } = inputs;
+      database.ref('users/' + data.user.uid)
+      .set({ name, email })
+      .then(() => history.push('/chat'));
+    })
+    .catch(error => {
+      alert("Eroor occured: " + error.message);
+    })
+  }
 
 
-    return(
-        <div>
-            <Header/>
-            <CssBaseline/>
-            <Card className='formacontrooutside'>
-                <form className = "customform">
-
-                <div>
-                    <label className='signUpText'> Email: </label>
-                        <input
-                        id="email"
-                        type="text"
-                        value={inputs.email}
-                        onChange={handleInput}
-                        />
-                </div>
-                <div>
-                    <label className='passwordField'> Password: </label>
-                        <input
-                        id="password"
-                        type="password"
-                        value={inputs.password}
-                        onChange={handleInput}
-                        />
-                </div>
-                <div>
-                    <label className='signUpText'> Name: </label>
-                        <input
-                        id="name"
-                        type="text"
-                        value={inputs.name}
-                        onChange={handleInput}
-                        />
-                </div>
-                <div className="CenterAlignItems">
-                    <button onClick={handleSubmit}>
-                        <span>Sign Up</span>
-                    </button>
-                </div>
-                <div>
-                    <p style={{color:'grey'}}>Already have an account?</p>
-                    <Link to="/login">
-                        Log In
-                    </Link>
-                </div>
-                </form>
-            </Card>
-        </div>
-    )
+  return(
+    <Box>
+      <Form>
+        <Heading> Sign up </Heading>
+        <Input
+          id="name"
+          type="text"
+          placeholder="Name"
+          value={inputs.name}
+          onChange={handleInput}
+        />
+        <Input
+          id="email"
+          type="text"
+          placeholder="Email"
+          value={inputs.email}
+          onChange={handleInput}
+        />
+        <Input
+          id="password"
+          type="password"
+          placeholder="Password"
+          value={inputs.password}
+          onChange={handleInput}
+        />
+        <Button onClick={handleSubmit}> Sign Up </Button>
+        <span>Already have an account?</span>
+        <Link to="/login"> Log In </Link>
+      </Form>
+    </Box>
+  )
 }
+
+const Box = styled.div`
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Form = styled.div`
+  width: 400px;
+  display: grid;
+  grid-gap: 10px;
+  padding: 40px;
+  border: 1px solid rgb(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  background: rgb(0, 0, 0, 0.02);
+`;
+
+const Heading = styled.h1`
+  margin-top: 0;
+  margin-bottom: 5px;
+`;
+
+const Input = styled.input`
+  font-size: 1rem;
+  padding: 10px 15px;
+  border: 1px solid rgb(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
+`;
+
+const Button = styled.button`
+  // border: none;
+  // color: grey;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  // background: white;
+`;
+
+export default Signup;

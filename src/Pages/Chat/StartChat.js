@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
+import { database, auth } from "../../firebase";
+
 // const colors = {
 //   green: 'rgb(40, 162, 111)',
 //   blue: 'rgb(117, 150, 209)',
@@ -9,12 +11,31 @@ import styled from 'styled-components'
 //   yellow: 'rgb(239, 131, 23)',
 // }
 
-function StartChat({ id, name, time, last, theme, unread, current, setCurrent, }) {
+function StartChat() {
   const [active, setActive] = useState(false);
+  const [email, setEmail] = useState('');
+
 
   useEffect(() => {
     if(active) document.getElementById("new").focus();
   }, [active])
+
+  const handleNew = email => {
+    const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
+    const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+
+    database.ref(`users/${uid1}/chats/${uid2}`).set({
+      language: 'english',
+      theme: 'blue',
+      messages: [0]
+    })
+
+    database.ref(`users/${uid2}/chats/${uid1}`).set({ 
+      language: 'english',
+      theme: 'blue',
+      messages: [0]
+    })
+  }
 
   return (
     <Box onClick={() => setActive(true)}>
@@ -23,8 +44,8 @@ function StartChat({ id, name, time, last, theme, unread, current, setCurrent, }
         active
         ? (
           <>
-            <Input id="new" placeholder="Type email here..." />
-            <Button>Add</Button>
+            <Input id="new" placeholder="Type email here..." value={email} onChange={e => setEmail(e.target.value)} />
+            <Button onClick={handleNew}>Add</Button>
           </>
         )
         : (
@@ -68,6 +89,7 @@ const Info = styled.div`
 const Last = styled.div`
   color: grey;
   font-size: 0.9rem;
+  margin-top: 4px;
   overflow: hidden;
   width: 220px;
   text-overflow: ellipsis;

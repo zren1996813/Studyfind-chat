@@ -22,7 +22,7 @@ function ChatBox({ id, name, time, last, theme, unread, current, setCurrent, }) 
           { UNREAD }
           <Date> {time} </Date>
         </Main>
-        <Last unread={unread} theme={theme}> {last} </Last>
+        <Last theme={theme}> {last} </Last>
       </Info>
     </Box>
   )
@@ -56,6 +56,7 @@ const Info = styled.div`
 const Last = styled.div`
   color: grey;
   font-size: 0.9rem;
+  margin-top: 4px;
   overflow: hidden;
   width: 220px;
   text-overflow: ellipsis;
