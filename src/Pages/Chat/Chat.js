@@ -4,8 +4,10 @@ import styled from 'styled-components'
 import Conversation from './Conversation'
 import ChatList from './ChatList'
 
-function Chat() {
+function Chat({ data, auth, database }) {
   const [current, setCurrent] = useState('fieuwhguiherghl');
+
+  console.log(data);
 
   const list = [
     { id: 'fieuwhguiherghl', name: 'Andrew Garcia', time: '2:07pm', last: 'What\'s the status on the advisory board?', theme: 'purple', unread: true },
@@ -21,8 +23,8 @@ function Chat() {
         <Logo> Fireside </Logo>
       </Header>
       <Main>
-        <ChatList current={current} list={list} setCurrent={setCurrent} />
-        <Conversation selected={list.find(item => item.id === current)} />
+        <ChatList list={list} current={current} setCurrent={setCurrent} />
+        <Conversation data={data} selected={list.find(item => item.id === current)} />
       </Main>
     </Body>
   )

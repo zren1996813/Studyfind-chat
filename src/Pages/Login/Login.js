@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { database, auth, facebookProvider, googleProvider } from "../../firebase";
-
 import { Link, useHistory } from 'react-router-dom';
 
 import Header from '../../Components/Header';
 
-function Login() {
+function Login({ auth, database, facebookProvider, googleProvider }) {
   const history = useHistory();
 
   const [inputs, setInputs] = useState({
@@ -26,11 +24,10 @@ function Login() {
     event.preventDefault();
     auth.signInWithPopup(facebookProvider)
     .then(data => {
-      const { name, email } = data.additionalUserInfo.profile;
-      if(data.additionalUserInfo.isNewUser){
-        database.ref('users/' + data.user.uid)
-        .set({ name, email })
-        .then(() => history.push('/chat'));
+      const { isNewUser, profile } = data.additionalUserInfo;
+      const { name, email } = profile;
+      if(isNewUser) {
+        database.ref('users/' + data.user.uid).set({ name, email })
       }
     })
     .catch(error => {
@@ -42,13 +39,11 @@ function Login() {
     event.preventDefault();
     auth.signInWithPopup(googleProvider)
     .then(data => {
-      const { name, email } = data.additionalUserInfo.profile;
-      if (data.additionalUserInfo.isNewUser){
-        database.ref('users/' + data.user.uid)
-        .set({ name, email })
-        .then(() => history.push('/chat'));
+      const { isNewUser, profile } = data.additionalUserInfo;
+      const { name, email } = profile;
+      if(isNewUser) {
+        database.ref('users/' + data.user.uid).set({ name, email })
       }
-      history.push('/chat');
     })
     .catch(error => {
       alert("Error occured: " + error.message);
@@ -57,11 +52,7 @@ function Login() {
 
   const handleSubmit = event => {
     auth.signInWithEmailAndPassword(inputs.email, inputs.password)
-    .then(data => {
-      console.log(data.user);
-      console.log('Sign in successful!')
-      history.push('/chat');
-    })
+    .then(data => {})
     .catch(error => {
       alert("Error occured: " + error.message);
     })

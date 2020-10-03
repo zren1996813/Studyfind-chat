@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+// import { database, auth } from "../../firebase";
+
 import Message from './Message';
 
 const colors = {
@@ -11,55 +13,10 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function Chat({ selected }) {
+function Conversation({ data, selected }) {
   const [theme, setTheme] = useState('purple');
-  const [messages, setMessages] = useState([
-    {
-      user: 'fieuwhguiherghl',
-      time: '9:08pm',
-      text: 'Lorem Ipsum is simply dummy text',
-    },
-    {
-      user: 'weihfuihewufiuh',
-      time: '9:08pm',
-      text: 'Printing and typesetting industry',
-    },
-    {
-      user: 'weihfuihewufiuh',
-      time: '9:08pm',
-      text: 'Industry\'s standard dummy text ever since the 1500s',
-    },
-    {
-      user: 'fieuwhguiherghl',
-      time: '9:08pm',
-      text: 'Unknown printer',
-    },
-    {
-      user: 'fieuwhguiherghl',
-      time: '9:08pm',
-      text: 'Type specimen book',
-    },
-    {
-      user: 'weihfuihewufiuh',
-      time: '9:08pm',
-      text: 'Leap into electronic typesetting, remaining essentially unchanged',
-    },
-    {
-      user: 'fieuwhguiherghl',
-      time: '9:08pm',
-      text: 'It was popularised in the 1960s with the release of Letrase',
-    },
-    {
-      user: 'weihfuihewufiuh',
-      time: '9:08pm',
-      text: 'Sheets containing Lorem Ipsum passages',
-    },
-    {
-      user: 'weihfuihewufiuh',
-      time: '9:08pm',
-      text: 'More recently with desktop',
-    }
-  ]);
+  const [message, setMessage] = useState('');
+  const messages = Object.values(data.chats['DigxM2I1dQbcL8yzfxGAK8y7quA2'].messages);
 
   useEffect(() => {
     setTheme(selected.theme);
@@ -69,6 +26,23 @@ function Chat({ selected }) {
     const objDiv = document.getElementById("messages");
     objDiv.scrollTop = objDiv.scrollHeight;
   }, [])
+
+  const handleSendMessage = () => {
+    const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
+    const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+
+    // database.ref(`users/${uid1}/chats/${uid2}/messages`).push({
+    //   user: uid2,
+    //   text: message,
+    //   time: new Date()
+    // })
+    //
+    // database.ref(`users/${uid2}/chats/${uid1}/messages`).push({
+    //   user: uid2,
+    //   text: message,
+    //   time: new Date()
+    // })
+  }
 
   const colors = ['purple', 'blue', 'green', 'yellow', 'red']
 
@@ -84,11 +58,11 @@ function Chat({ selected }) {
         </Theme>
       </Header>
       <Messages id="messages" theme={theme}>
-        {messages.map(message => <Message theme={theme} {...message} />)}
+        { messages.map(message => <Message theme={theme} {...message} />) }
       </Messages>
       <Footer>
-        <Type placeholder="Type your message here..." />
-        <Send theme={theme} className="fa fa-paper-plane" />
+        <Type placeholder="Type your message here..." value={message} onChange={e => setMessage(e.target.value)} />
+        <Send theme={theme} className="fa fa-paper-plane" onClick={() => handleSendMessage()} />
       </Footer>
     </Convo>
   )
@@ -240,4 +214,4 @@ const Type = styled.input`
 `
 
 
-export default Chat;
+export default Conversation;

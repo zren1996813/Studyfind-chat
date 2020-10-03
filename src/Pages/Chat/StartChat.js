@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { database, auth } from "../../firebase";
+// import { database, auth } from "../../firebase";
 
 // const colors = {
 //   green: 'rgb(40, 162, 111)',
@@ -24,17 +24,17 @@ function StartChat() {
     const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
     const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
 
-    database.ref(`users/${uid1}/chats/${uid2}`).set({
-      language: 'english',
-      theme: 'blue',
-      messages: [0]
-    })
-
-    database.ref(`users/${uid2}/chats/${uid1}`).set({ 
-      language: 'english',
-      theme: 'blue',
-      messages: [0]
-    })
+    // database.ref(`users/${uid1}/chats/${uid2}`).set({
+    //   language: 'english',
+    //   theme: 'blue',
+    //   messages: [0]
+    // })
+    //
+    // database.ref(`users/${uid2}/chats/${uid1}`).set({
+    //   language: 'english',
+    //   theme: 'blue',
+    //   messages: [0]
+    // })
   }
 
   return (
