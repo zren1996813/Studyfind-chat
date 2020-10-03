@@ -1,5 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
+require("firebase/functions")
+
 var firebaseConfig = {
     apiKey: "AIzaSyDnykWYSIsAmNZyL2ud2Y-gClJGu-gebiU",
     authDomain: "chat-app-new-8caac.firebaseapp.com",
@@ -11,4 +13,5 @@ var firebaseConfig = {
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+
 export default firebase;
