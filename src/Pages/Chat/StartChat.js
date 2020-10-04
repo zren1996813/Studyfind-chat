@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { auth, firestore } from './../../firebase';
+import { auth, firestore } from 'fire';
 
-// const colors = {
-//   green: 'rgb(40, 162, 111)',
-//   blue: 'rgb(117, 150, 209)',
-//   red: 'rgb(227, 119, 129)',
-//   purple: 'rgb(108, 55, 214)',
-//   yellow: 'rgb(239, 131, 23)',
-// }
+const colors = {
+  green: 'rgb(40, 162, 111)',
+  blue: 'rgb(117, 150, 209)',
+  red: 'rgb(227, 119, 129)',
+  purple: 'rgb(108, 55, 214)',
+  yellow: 'rgb(239, 131, 23)',
+}
 
 function StartChat({ data }) {
   const [active, setActive] = useState(false);
@@ -20,35 +20,29 @@ function StartChat({ data }) {
     if(active) document.getElementById("new").focus();
   }, [active])
 
-  // console.log(auth);
-  // console.log(firestore);
-
   const handleNew = () => {
-    // const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
-    // const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+    const email1 = email.trim();
+    const email2 = data.email.trim();
 
-    const uid1 = email.trim();
-    const uid2 = data.uid.trim();
-
-    if(uid1 === uid2) return;
-    firestore.collection('users').doc(uid1 || ' ').get()
+    if(email1 === email2) return;
+    firestore.collection('users').doc(email1 || ' ').get()
     .then(snapshot => {
       if (snapshot.exists) {
-        firestore.collection('users').doc(uid1)
+        firestore.collection('users').doc(email1)
         .onSnapshot(doc => {
-          const name = doc.data().name;
-          firestore.collection('users').doc(uid1).collection('chats').doc(uid2).get()
+          const {  name, language } = doc.data();
+          firestore.collection('users').doc(email1).collection('chats').doc(email2).get()
           .then(snapshot => {
             if(!snapshot.exists) {
-              firestore.collection('users').doc(uid1).collection('chats').doc(uid2).set({
+              firestore.collection('users').doc(email1).collection('chats').doc(email2).set({
                 name,
-                language: 'english',
+                language,
                 theme: 'red',
                 unread: false,
                 last: {}
               })
 
-              firestore.collection('users').doc(uid2).collection('chats').doc(uid1).set({
+              firestore.collection('users').doc(email2).collection('chats').doc(email1).set({
                 name: data.name,
                 language: 'english',
                 theme: 'blue',
@@ -66,28 +60,27 @@ function StartChat({ data }) {
     });
   }
 
-  return (
+  const DEFAULT = (
     <Box onClick={() => setActive(true)}>
       <Icon><i className="fa fa-plus" /></Icon>
-      {
-        active
-        ? (
-          <>
-            <Input id="new" placeholder="Type email here..." value={email} onChange={e => setEmail(e.target.value)} />
-            <Button onClick={handleNew}>Add</Button>
-          </>
-        )
-        : (
-          <>
-            <Info>
-              <Name>New Chat</Name>
-              <Last>Find users by their email</Last>
-            </Info>
-          </>
-        )
-      }
+      <Info>
+        <Name>New Chat</Name>
+        <Last>Find users by their email</Last>
+      </Info>
     </Box>
   )
+
+  const ACTIVE = (
+    <Box>
+      <Input id="new" placeholder="Type email here..." value={email} onChange={e => setEmail(e.target.value)} />
+      <Buttons>
+        <Button primary onClick={handleNew}> Add </Button>
+        <Button onClick={() => setActive(false)}> Cancel </Button>
+      </Buttons>
+    </Box>
+  )
+
+  return active ? ACTIVE : DEFAULT;
 }
 
 const Box = styled.div`
@@ -178,6 +171,11 @@ const Input = styled.input`
   }
 `;
 
+const Buttons = styled.div`
+  display: flex;
+  grid-gap: 5px;
+`;
+
 const Button = styled.button`
   cursor: pointer;
   color: rgb(0, 0, 0, 0.5);
@@ -188,6 +186,10 @@ const Button = styled.button`
   padding: 5px 10px;
   border-radius: 5px;
 
+  ${props => props.primary && `
+    color: ${colors.green};
+    background: rgb(187, 248, 223);
+  `};
 `;
 
 export default StartChat

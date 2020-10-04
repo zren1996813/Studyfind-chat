@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { firestore } from "../../firebase";
+import { firestore } from 'fire';
 import * as firebase from 'firebase/app'
-
 
 import Message from './Message';
 
@@ -21,20 +20,21 @@ function Conversation({ data, current }) {
   const [chat, setChat] = useState();
 
   useEffect(() => {
-    firestore.collection("users").doc(data.uid).collection("chats").doc(current)
-    .onSnapshot(async doc => {
-      const snapshot = await firestore.collection("users").doc(data.uid).collection("chats").doc(current).collection("messages").orderBy("time").get()
+    firestore.collection("users").doc(data.email).collection("chats").doc(current).collection("messages").orderBy("time")
+    .onSnapshot(async messageData => {
+
       const messages = []
-      snapshot.forEach(doc => messages.push(doc.data()));
-      setChat({ ...doc.data(), messages });
+      messageData.forEach(doc => messages.push(doc.data()));
+      setChat({ ...data.chats[current], messages });
+
     });
   }, [])
 
   useEffect(() => {
     if(chat) {
-      setTheme(chat.theme);
-      const objDiv = document.getElementById("messages");
-      objDiv.scrollTop = objDiv.scrollHeight;
+      setTheme(chat.theme || 'purple');
+      const messagesDiv = document.getElementById("messages");
+      if(messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
   }, [chat])
 
@@ -47,21 +47,27 @@ function Conversation({ data, current }) {
       user: data.name,
     }
 
-    firestore.collection("users").doc(current).collection("chats").doc(data.uid).set({
+    firestore.collection("users").doc(current).collection("chats").doc(data.email).update({
       unread: true,
       last: message,
       messages: []
     })
 
-    firestore.collection("users").doc(current).collection("chats").doc(data.uid).collection("messages").add(message);
-    firestore.collection("users").doc(data.uid).collection("chats").doc(current).collection("messages").add(message);
+    firestore.collection("users").doc(data.email).collection("chats").doc(current).set({
+      unread: true,
+      last: message,
+      messages: []
+    })
+
+    firestore.collection("users").doc(current).collection("chats").doc(data.email).collection("messages").add(message);
+    firestore.collection("users").doc(data.email).collection("chats").doc(current).collection("messages").add(message);
 
     setInput('')
   }
 
   const colors = ['purple', 'blue', 'green', 'yellow', 'red']
 
-  return chat ? (
+  return current.trim() ? chat ? (
     <Convo>
       <Header>
         <Contact>
@@ -80,8 +86,22 @@ function Conversation({ data, current }) {
         <Send theme={theme} className="fa fa-paper-plane" onClick={() => handleSendMessage()} />
       </Footer>
     </Convo>
-  ) : <div>Loading...</div>
+  ) : <div>Loading...</div> : <Default><h1>Chat with anyone</h1> <Image src={require('img/analysis.svg')} /></Default>
 }
+
+const Default = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-left: 1px solid rgb(238, 238, 243);
+`;
+
+const Image = styled.img`
+  width: 50%;
+`;
 
 const Convo = styled.div`
   display: flex;
@@ -89,6 +109,7 @@ const Convo = styled.div`
   justify-content: space-between;
   grid-template-rows: 57px 1fr 81px;
   border-left: 1px solid rgb(238, 238, 243);
+  width: 100%;
 `
 
 const Header = styled.div`
@@ -142,7 +163,7 @@ const Flag = styled.img`
 `
 
 const Messages = styled.div`
-  height: calc(100vh - 80px - 57px - 81px);
+  height: 100%;
   padding: 0 10px;
   display: flex;
   flex-direction: column;

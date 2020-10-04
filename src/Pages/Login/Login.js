@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { auth, firestore, googleProvider } from './../../firebase';
+import { auth, firestore, googleProvider } from 'fire';
 
 import Header from '../../Components/Header';
 
 function Login() {
-  const [inputs, setInputs] = useState({
-    email: '',
-    password: '',
-    name: ''
-  });
-
-  const [error, setError] = useState('');
-
-  const handleInput = event => {
-    setInputs({ ...inputs, [event.target.id]: event.target.value });
-  }
+  const [language, setLanguage] = useState('');
 
   const signInWithGoogle = event => {
     event.preventDefault();
@@ -24,15 +14,7 @@ function Login() {
     .then(data => {
       const { isNewUser, profile } = data.additionalUserInfo;
       const { name, email } = profile;
-      if(isNewUser) {
-        firestore.collection("users").doc(data.user.uid).set({ name, email })
-        .then(function() {
-            console.log("Document successfully written!");
-        })
-        .catch(function(error) {
-            console.error("Error writing document: ", error);
-        });
-      }
+      if(isNewUser) firestore.collection("users").doc(email).set({ name, language });
     })
     .catch(error => {
       alert("Error occured: " + error.message);
@@ -41,7 +23,15 @@ function Login() {
 
   return(
     <Box>
-      <Button theme="google" onClick={signInWithGoogle}><i className="fa fa-google" /> Sign in with Google </Button>
+      <Form>
+        <Select value={language} onChange={e => setLanguage(e.target.value)}>
+          <option value="">Select Language</option>
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+          <option value="Chinese">Chinese</option>
+        </Select>
+        <Button disabled={!language} theme="google" onClick={signInWithGoogle}><i className="fa fa-google" /> Sign in with Google </Button>
+      </Form>
     </Box>
   )
 }
@@ -52,6 +42,16 @@ const Box = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const Form = styled.div`
+  display: grid;
+  grid-gap: 10px;
+`;
+
+const Select = styled.select`
+  padding: 8px 4px;
+  font-size: 1rem;
 `;
 
 const Button = styled.button`
@@ -65,6 +65,12 @@ const Button = styled.button`
   grid-gap: 6px;
   border-radius: 0.25rem;
   background: #DB4437;
+  cursor: pointer;
+
+  ${props => props.disabled && `
+    opacity: 0.5;
+    cursor: not-allowed;
+  `}
 `;
 
 export default Login;

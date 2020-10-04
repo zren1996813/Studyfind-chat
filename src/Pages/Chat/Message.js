@@ -2,18 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 
 const colors = {
+  red: 'rgb(227, 119, 129)',
   green: 'rgb(40, 162, 111)',
   blue: 'rgb(117, 150, 209)',
-  red: 'rgb(227, 119, 129)',
   purple: 'rgb(108, 55, 214)',
-  yellow: 'rgb(239, 131, 23)',
+  yellow: 'rgb(239, 131, 23)'
 }
 
 function Message({ theme, time, text, user, data }) {
   const timestamp = time.toDate();
-  const minutes = timestamp.getMinutes();
   const hours = timestamp.getHours();
-  console.log(theme);
+  const minutes = timestamp.getMinutes();
+
   return (
     <Box you={user === data.name}>
       <Text theme={theme} you={user === data.name}>{ text }</Text>
@@ -24,7 +24,6 @@ function Message({ theme, time, text, user, data }) {
 
 const Box = styled.div`
   max-width: 80%;
-  min-width: 40%;
   align-self: ${props => props.you ? 'flex-end' : 'flex-start'};
 `;
 

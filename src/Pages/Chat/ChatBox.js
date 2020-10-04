@@ -1,17 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
 
-// const colors = {
-//   green: 'rgb(40, 162, 111)',
-//   blue: 'rgb(117, 150, 209)',
-//   red: 'rgb(227, 119, 129)',
-//   purple: 'rgb(108, 55, 214)',
-//   yellow: 'rgb(239, 131, 23)',
-// }
+const colors = {
+  green: 'rgb(40, 162, 111)',
+  blue: 'rgb(117, 150, 209)',
+  red: 'rgb(227, 119, 129)',
+  purple: 'rgb(108, 55, 214)',
+  yellow: 'rgb(239, 131, 23)',
+}
 
 function ChatBox({ id, name, last, theme, unread, current, setCurrent }) {
-  const initials = name.split(' ').map(word => word[0].toUpperCase())
+  const initials = name && name.split(' ').map(word => word[0].toUpperCase())
   const UNREAD = unread && <Unread className="fa fa-circle"></Unread>
+
+  const timestamp = last.time && last.time.toDate();
+  const hours = timestamp && timestamp.getHours();
+  const minutes = timestamp && timestamp.getMinutes();
 
   return (
     <Box current={current} onClick={() => setCurrent(id)}>
@@ -20,7 +24,7 @@ function ChatBox({ id, name, last, theme, unread, current, setCurrent }) {
         <Main>
           <Name> {name} </Name>
           { UNREAD }
-          <Date> {last.time} </Date>
+          <Date>{hours}:{minutes}</Date>
         </Main>
         <Last theme={theme}> {last.text || <i>Start your new chat from here</i>} </Last>
       </Info>
@@ -108,15 +112,7 @@ const Icon = styled.div`
   background: rgb(187, 248, 223);
   color: rgb(40, 162, 111);
 
-  color: ${props => {
-    switch(props.theme) {
-      case 'green': return 'rgb(40, 162, 111)'
-      case 'blue': return 'rgb(117, 150, 209)'
-      case 'red': return 'rgb(227, 119, 129)'
-      case 'purple': return 'rgb(108, 55, 214)'
-      case 'yellow': return 'rgb(239, 131, 23)'
-    }
-  }};
+  color: ${props => colors[props.theme]};
 
   background: ${props => {
     switch(props.theme) {
