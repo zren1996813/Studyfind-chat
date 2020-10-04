@@ -20,6 +20,11 @@ function StartChat({ data }) {
     if(active) document.getElementById("new").focus();
   }, [active])
 
+  const handleCancel = () => {
+    setActive(false);
+    setEmail('');
+  }
+
   const handleNew = () => {
     const email1 = email.trim();
     const email2 = data.email.trim();
@@ -51,6 +56,7 @@ function StartChat({ data }) {
               });
 
               setActive(false);
+              setEmail('');
             } else {
               alert('chat with this user exists');
             }
@@ -77,7 +83,7 @@ function StartChat({ data }) {
       <Input id="new" placeholder="Type email here..." value={email} onChange={e => setEmail(e.target.value)} />
       <Buttons>
         <Button primary onClick={handleNew}> Add </Button>
-        <Button onClick={() => setActive(false)}> Cancel </Button>
+        <Button onClick={handleCancel}> Cancel </Button>
       </Buttons>
     </Box>
   )
