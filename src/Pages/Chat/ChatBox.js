@@ -9,7 +9,7 @@ import styled from 'styled-components'
 //   yellow: 'rgb(239, 131, 23)',
 // }
 
-function ChatBox({ id, name, time, last, theme, unread, current, setCurrent, }) {
+function ChatBox({ id, name, last, theme, unread, current, setCurrent }) {
   const initials = name.split(' ').map(word => word[0].toUpperCase())
   const UNREAD = unread && <Unread className="fa fa-circle"></Unread>
 
@@ -20,9 +20,9 @@ function ChatBox({ id, name, time, last, theme, unread, current, setCurrent, }) 
         <Main>
           <Name> {name} </Name>
           { UNREAD }
-          <Date> {time} </Date>
+          <Date> {last.time} </Date>
         </Main>
-        <Last theme={theme}> {last} </Last>
+        <Last theme={theme}> {last.text || <i>Start your new chat from here</i>} </Last>
       </Info>
     </Box>
   )

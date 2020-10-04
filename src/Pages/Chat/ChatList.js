@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import ChatBox from './ChatBox'
 import StartChat from './StartChat'
 
-function ChatList({ list, current, setCurrent }) {
+function ChatList({ data, current, setCurrent }) {
   return (
     <List>
-      { list.map(item => <ChatBox current={item.id === current} setCurrent={setCurrent} {...item} />) }
-      <StartChat />
+      { data.chats.map(item => <ChatBox current={item.id === current} setCurrent={setCurrent} {...item} />) }
+      <StartChat data={data} />
     </List>
   )
 }

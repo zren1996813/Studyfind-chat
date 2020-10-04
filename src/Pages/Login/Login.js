@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Link, useHistory } from 'react-router-dom';
+import { auth, firestore, googleProvider } from './../../firebase';
 
 import Header from '../../Components/Header';
 
-function Login({ auth, database, facebookProvider, googleProvider }) {
-  const history = useHistory();
-
+function Login() {
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -20,21 +18,6 @@ function Login({ auth, database, facebookProvider, googleProvider }) {
     setInputs({ ...inputs, [event.target.id]: event.target.value });
   }
 
-  const signInWithFacebook = event => {
-    event.preventDefault();
-    auth.signInWithPopup(facebookProvider)
-    .then(data => {
-      const { isNewUser, profile } = data.additionalUserInfo;
-      const { name, email } = profile;
-      if(isNewUser) {
-        database.ref('users/' + data.user.uid).set({ name, email })
-      }
-    })
-    .catch(error => {
-      alert("Error occured: " + error.message);
-    })
-  }
-
   const signInWithGoogle = event => {
     event.preventDefault();
     auth.signInWithPopup(googleProvider)
@@ -42,7 +25,13 @@ function Login({ auth, database, facebookProvider, googleProvider }) {
       const { isNewUser, profile } = data.additionalUserInfo;
       const { name, email } = profile;
       if(isNewUser) {
-        database.ref('users/' + data.user.uid).set({ name, email })
+        firestore.collection("users").doc(data.user.uid).set({ name, email })
+        .then(function() {
+            console.log("Document successfully written!");
+        })
+        .catch(function(error) {
+            console.error("Error writing document: ", error);
+        });
       }
     })
     .catch(error => {
@@ -50,36 +39,9 @@ function Login({ auth, database, facebookProvider, googleProvider }) {
     })
   }
 
-  const handleSubmit = event => {
-    auth.signInWithEmailAndPassword(inputs.email, inputs.password)
-    .then(data => {})
-    .catch(error => {
-      alert("Error occured: " + error.message);
-    })
-  }
-
   return(
     <Box>
-      <Form>
-        <Heading> Log in </Heading>
-        <Input
-          id="email"
-          type="text"
-          placeholder="Email"
-          value={inputs.email}
-          onChange={handleInput}
-        />
-        <Input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={inputs.password}
-          onChange={handleInput}
-        />
-        <Button theme="normal" onClick={handleSubmit}> Create Account </Button>
-        <Button theme="google" onClick={signInWithGoogle}> Sign in with Google</Button>
-        <Button theme="facebook" onClick={signInWithFacebook}>Sign in with Facebook</Button>
-      </Form>
+      <Button theme="google" onClick={signInWithGoogle}><i className="fa fa-google" /> Sign in with Google </Button>
     </Box>
   )
 }
@@ -92,35 +54,17 @@ const Box = styled.div`
   align-items: center;
 `;
 
-const Form = styled.div`
-  width: 400px;
-  display: grid;
-  grid-gap: 10px;
-  padding: 40px;
-  border: 1px solid rgb(0, 0, 0, 0.1);
-  border-radius: 0.25rem;
-  background: rgb(0, 0, 0, 0.02);
-`;
-
-const Heading = styled.h1`
-  margin-top: 0;
-  margin-bottom: 5px;
-`;
-
-const Input = styled.input`
-  font-size: 1rem;
-  padding: 10px 15px;
-  border: 1px solid rgb(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-`;
-
 const Button = styled.button`
-  // border: none;
-  // color: grey;
+  border: none;
+  color: white;
   padding: 10px;
   font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  grid-gap: 6px;
   border-radius: 0.25rem;
-  // background: white;
+  background: #DB4437;
 `;
 
 export default Login;

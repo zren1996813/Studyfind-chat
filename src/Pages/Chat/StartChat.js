@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-// import { database, auth } from "../../firebase";
+import { auth, firestore } from './../../firebase';
 
 // const colors = {
 //   green: 'rgb(40, 162, 111)',
@@ -11,7 +11,7 @@ import styled from 'styled-components'
 //   yellow: 'rgb(239, 131, 23)',
 // }
 
-function StartChat() {
+function StartChat({ data }) {
   const [active, setActive] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -20,21 +20,50 @@ function StartChat() {
     if(active) document.getElementById("new").focus();
   }, [active])
 
-  const handleNew = email => {
-    const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
-    const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+  // console.log(auth);
+  // console.log(firestore);
 
-    // database.ref(`users/${uid1}/chats/${uid2}`).set({
-    //   language: 'english',
-    //   theme: 'blue',
-    //   messages: [0]
-    // })
-    //
-    // database.ref(`users/${uid2}/chats/${uid1}`).set({
-    //   language: 'english',
-    //   theme: 'blue',
-    //   messages: [0]
-    // })
+  const handleNew = () => {
+    // const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
+    // const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+
+    const uid1 = email.trim();
+    const uid2 = data.uid.trim();
+
+    if(uid1 === uid2) return;
+    firestore.collection('users').doc(uid1 || ' ').get()
+    .then(snapshot => {
+      if (snapshot.exists) {
+        firestore.collection('users').doc(uid1)
+        .onSnapshot(doc => {
+          const name = doc.data().name;
+          firestore.collection('users').doc(uid1).collection('chats').doc(uid2).get()
+          .then(snapshot => {
+            if(!snapshot.exists) {
+              firestore.collection('users').doc(uid1).collection('chats').doc(uid2).set({
+                name,
+                language: 'english',
+                theme: 'red',
+                unread: false,
+                last: {}
+              })
+
+              firestore.collection('users').doc(uid2).collection('chats').doc(uid1).set({
+                name: data.name,
+                language: 'english',
+                theme: 'blue',
+                unread: false,
+                last: {}
+              });
+            } else {
+              alert('chat with this user exists');
+            }
+          });
+        });
+      } else {
+        alert('user does not exist');
+      }
+    });
   }
 
   return (

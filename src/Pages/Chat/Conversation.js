@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-// import { database, auth } from "../../firebase";
+import { firestore } from "../../firebase";
+import * as firebase from 'firebase/app'
+
 
 import Message from './Message';
 
@@ -13,59 +15,72 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function Conversation({ data, selected }) {
-  const [theme, setTheme] = useState('purple');
-  const [message, setMessage] = useState('');
-  const messages = Object.values(data.chats['DigxM2I1dQbcL8yzfxGAK8y7quA2'].messages);
+function Conversation({ data, current }) {
+  const [theme, setTheme] = useState('red');
+  const [input, setInput] = useState('');
+  const [chat, setChat] = useState();
 
   useEffect(() => {
-    setTheme(selected.theme);
-  }, [selected])
-
-  useEffect(() => {
-    const objDiv = document.getElementById("messages");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    firestore.collection("users").doc(data.uid).collection("chats").doc(current)
+    .onSnapshot(async doc => {
+      const snapshot = await firestore.collection("users").doc(data.uid).collection("chats").doc(current).collection("messages").orderBy("time").get()
+      const messages = []
+      snapshot.forEach(doc => messages.push(doc.data()));
+      setChat({ ...doc.data(), messages });
+    });
   }, [])
 
-  const handleSendMessage = () => {
-    const uid1 = 'DigxM2I1dQbcL8yzfxGAK8y7quA2';
-    const uid2 = 'siAX25BafRXTFbQiIKsdoWHk9gB3';
+  useEffect(() => {
+    if(chat) {
+      setTheme(chat.theme);
+      const objDiv = document.getElementById("messages");
+      objDiv.scrollTop = objDiv.scrollHeight;
+    }
+  }, [chat])
 
-    // database.ref(`users/${uid1}/chats/${uid2}/messages`).push({
-    //   user: uid2,
-    //   text: message,
-    //   time: new Date()
-    // })
-    //
-    // database.ref(`users/${uid2}/chats/${uid1}/messages`).push({
-    //   user: uid2,
-    //   text: message,
-    //   time: new Date()
-    // })
+  const handleSendMessage = () => {
+    if(!input) return;
+
+    const message = {
+      text: input.trim(),
+      time: firebase.firestore.Timestamp.fromDate(new Date()),
+      user: data.name,
+    }
+
+    firestore.collection("users").doc(current).collection("chats").doc(data.uid).set({
+      unread: true,
+      last: message,
+      messages: []
+    })
+
+    firestore.collection("users").doc(current).collection("chats").doc(data.uid).collection("messages").add(message);
+    firestore.collection("users").doc(data.uid).collection("chats").doc(current).collection("messages").add(message);
+
+    setInput('')
   }
 
   const colors = ['purple', 'blue', 'green', 'yellow', 'red']
 
-  return (
+  return chat ? (
     <Convo>
       <Header>
         <Contact>
           <Flag src={require('./../../img/flags/us.svg')} alt="logo" />
-          <Name>{ selected.name }</Name>
+          <Name>{ chat.name }</Name>
         </Contact>
         <Theme>
           { colors.map(color => <Color name={color} selected={color === theme} onClick={() => setTheme(color)} />) }
         </Theme>
       </Header>
       <Messages id="messages" theme={theme}>
-        { messages.map(message => <Message theme={theme} {...message} />) }
+        { chat.messages.map(message => <Message theme={theme} data={data} {...message} />) }
       </Messages>
       <Footer>
-        <Type placeholder="Type your message here..." value={message} onChange={e => setMessage(e.target.value)} />
+        <Type placeholder="Type your message here..." value={input} onChange={e => setInput(e.target.value)} />
         <Send theme={theme} className="fa fa-paper-plane" onClick={() => handleSendMessage()} />
       </Footer>
     </Convo>
-  )
+  ) : <div>Loading...</div>
 }
 
 const Convo = styled.div`
@@ -165,8 +180,8 @@ const Footer = styled.div`
 const Send = styled.button`
   border: none;
   font-size: 0.9rem;
-  height: 41px;
-  width: 41px;
+  height: 30px;
+  width: 30px;
   outline: none;
   border-radius: 100px;
   margin-left: 10px;
@@ -184,17 +199,18 @@ const Send = styled.button`
 
   &:hover {
     color: #377dff;
+    background: rgb(55, 125, 255, 0.2);
   }
 
   position: absolute;
-  right: 25px;
+  right: 23px;
 `
 
 const Type = styled.input`
   width: 100%;
   font-size: 0.9rem;
   padding: 10px 15px;
-  padding-right: 25px;
+  padding-right: 40px;
   background: rgb(245, 245, 245);
   border: none;
   border-radius: 100px;

@@ -9,17 +9,22 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function Message({ theme, time, text, user }) {
+function Message({ theme, time, text, user, data }) {
+  const timestamp = time.toDate();
+  const minutes = timestamp.getMinutes();
+  const hours = timestamp.getHours();
+  console.log(theme);
   return (
-    <Box you={user === 'weihfuihewufiuh'}>
-      <Text theme={theme} you={user === 'weihfuihewufiuh'}>{ text }</Text>
-      <Time>{ time }</Time>
+    <Box you={user === data.name}>
+      <Text theme={theme} you={user === data.name}>{ text }</Text>
+      <Time>{hours}:{minutes}</Time>
     </Box>
   )
 }
 
 const Box = styled.div`
   max-width: 80%;
+  min-width: 40%;
   align-self: ${props => props.you ? 'flex-end' : 'flex-start'};
 `;
 

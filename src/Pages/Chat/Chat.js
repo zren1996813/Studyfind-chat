@@ -4,18 +4,18 @@ import styled from 'styled-components'
 import Conversation from './Conversation'
 import ChatList from './ChatList'
 
-function Chat({ data, auth, database }) {
-  const [current, setCurrent] = useState('fieuwhguiherghl');
+import { auth, firestore } from './../../firebase';
 
-  console.log(data);
+function Chat({ data }) {
+  const [current, setCurrent] = useState(data.chats[0] ? data.chats[0].id : ' ');
 
-  const list = [
-    { id: 'fieuwhguiherghl', name: 'Andrew Garcia', time: '2:07pm', last: 'What\'s the status on the advisory board?', theme: 'purple', unread: true },
-    { id: 'ghrewhguiwhelue', name: 'Jeremy Webb', time: '1:13pm', last: 'Good job on the app design!', theme: 'red', unread: false },
-    { id: 'weihfuihewufiuh', name: 'Yohan Jhaveri', time: 'Mon', last: 'What feature are we developing next?', theme: 'blue', unread: false },
-    { id: 'gehguerwhiehrgh', name: 'Vir Mittal', time: 'Mon', last: 'I need to email the Georgia Tech Capstone team', theme: 'yellow', unread: true },
-    { id: 'iewfhiuhweuifhg', name: 'Zeil Ren', time: 'Sat', last: 'What is your progress on the courses so far?', theme: 'green', unread: false }
-  ]
+  // const list = [
+  //   { id: 'fieuwhguiherghl', name: 'Andrew Garcia', time: '2:07pm', last: 'What\'s the status on the advisory board?', theme: 'purple', unread: true },
+  //   { id: 'ghrewhguiwhelue', name: 'Jeremy Webb', time: '1:13pm', last: 'Good job on the app design!', theme: 'red', unread: false },
+  //   { id: 'weihfuihewufiuh', name: 'Yohan Jhaveri', time: 'Mon', last: 'What feature are we developing next?', theme: 'blue', unread: false },
+  //   { id: 'gehguerwhiehrgh', name: 'Vir Mittal', time: 'Mon', last: 'I need to email the Georgia Tech Capstone team', theme: 'yellow', unread: true },
+  //   { id: 'iewfhiuhweuifhg', name: 'Zeil Ren', time: 'Sat', last: 'What is your progress on the courses so far?', theme: 'green', unread: false }
+  // ]
 
   return (
     <Body>
@@ -23,8 +23,8 @@ function Chat({ data, auth, database }) {
         <Logo> Fireside </Logo>
       </Header>
       <Main>
-        <ChatList list={list} current={current} setCurrent={setCurrent} />
-        <Conversation data={data} selected={list.find(item => item.id === current)} />
+        <ChatList data={data} current={current} setCurrent={setCurrent} />
+        <Conversation current={current} data={data} />
       </Main>
     </Body>
   )
