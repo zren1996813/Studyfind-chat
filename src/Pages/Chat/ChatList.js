@@ -16,6 +16,7 @@ const List = styled.div`
   overflow-y: scroll;
   height: 100%;
   min-width: 325px;
+  border-right: 1px solid rgb(238, 238, 243);
 `
 
 // PURPLE

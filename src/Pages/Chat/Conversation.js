@@ -15,23 +15,26 @@ const colors = {
 }
 
 function Conversation({ data, current }) {
-  const [theme, setTheme] = useState('red');
+  const [theme, setTheme] = useState('');
   const [input, setInput] = useState('');
   const [chat, setChat] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     firestore.collection("users").doc(data.email).collection("chats").doc(current).collection("messages").orderBy("time")
     .onSnapshot(async messageData => {
 
       const messages = []
       messageData.forEach(doc => messages.push(doc.data()));
       setChat({ ...data.chats.find(chat => chat.user === current), messages });
-
     });
-  }, [])
+  }, [current])
+
 
   useEffect(() => {
     if(chat) {
+      setLoading(false);
       setTheme(chat.theme || 'purple');
       const messagesDiv = document.getElementById("messages");
       if(messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -67,26 +70,26 @@ function Conversation({ data, current }) {
 
   const colors = ['purple', 'blue', 'green', 'yellow', 'red']
 
-  return current.trim() ? chat ? (
+  return current.trim() ? (
     <Convo>
       <Header>
         <Contact>
           <Flag src={require('./../../img/flags/us.svg')} alt="logo" />
-          <Name>{ chat.name }</Name>
+          <Name>{ data.chats.find(chat => chat.user === current).name }</Name>
         </Contact>
         <Theme>
           { colors.map(color => <Color name={color} selected={color === theme} onClick={() => setTheme(color)} />) }
         </Theme>
       </Header>
       <Messages id="messages" theme={theme}>
-        { chat.messages.map(message => <Message theme={theme} data={data} {...message} />) }
+        { !loading ? chat && chat.messages.map(message => <Message theme={theme} data={data} {...message} />) : <div>Loading...</div> }
       </Messages>
       <Footer>
         <Type placeholder="Type your message here..." value={input} onChange={e => setInput(e.target.value)} />
         <Send theme={theme} className="fa fa-paper-plane" onClick={() => handleSendMessage()} />
       </Footer>
     </Convo>
-  ) : <div>Loading...</div> : <Default><h1>Chat with anyone</h1> <Image src={require('img/analysis.svg')} /></Default>
+  ) : <Default><h1>Chat with anyone</h1> <Image src={require('img/analysis.svg')} /></Default>
 }
 
 const Default = styled.div`
@@ -96,7 +99,6 @@ const Default = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  border-left: 1px solid rgb(238, 238, 243);
 `;
 
 const Image = styled.img`
@@ -108,7 +110,6 @@ const Convo = styled.div`
   flex-direction: column;
   justify-content: space-between;
   grid-template-rows: 57px 1fr 81px;
-  border-left: 1px solid rgb(238, 238, 243);
   width: 100%;
 `
 

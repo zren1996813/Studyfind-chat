@@ -30,22 +30,22 @@ function StartChat({ data }) {
       if (snapshot.exists) {
         firestore.collection('users').doc(email1)
         .onSnapshot(doc => {
-          const {  name, language } = doc.data();
+          const { name, language } = doc.data();
           firestore.collection('users').doc(email1).collection('chats').doc(email2).get()
           .then(snapshot => {
             if(!snapshot.exists) {
               firestore.collection('users').doc(email1).collection('chats').doc(email2).set({
-                name,
-                language,
-                theme: 'red',
+                name: data.name,
+                language: 'english',
+                theme: 'blue',
                 unread: false,
                 last: {}
               })
 
               firestore.collection('users').doc(email2).collection('chats').doc(email1).set({
-                name: data.name,
-                language: 'english',
-                theme: 'blue',
+                name,
+                language,
+                theme: 'red',
                 unread: false,
                 last: {}
               });
