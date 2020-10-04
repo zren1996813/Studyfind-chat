@@ -27,6 +27,8 @@ function App() {
     }
   }, [user])
 
+  // auth.signOut();
+
   console.log(data)
 
   return loading || (user && !data)

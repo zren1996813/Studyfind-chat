@@ -6,7 +6,7 @@ import StartChat from './StartChat'
 function ChatList({ data, current, setCurrent }) {
   return (
     <List>
-      { data.chats.map(item => <ChatBox current={item.id === current} setCurrent={setCurrent} {...item} />) }
+      { data.chats.map(item => <ChatBox current={item.user === current} setCurrent={setCurrent} {...item} />) }
       <StartChat data={data} />
     </List>
   )

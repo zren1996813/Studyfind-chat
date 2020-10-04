@@ -9,7 +9,7 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function ChatBox({ id, name, last, theme, unread, current, setCurrent }) {
+function ChatBox({ user, name, last, theme, unread, current, setCurrent }) {
   const initials = name && name.split(' ').map(word => word[0].toUpperCase())
   const UNREAD = unread && <Unread className="fa fa-circle"></Unread>
 
@@ -18,7 +18,7 @@ function ChatBox({ id, name, last, theme, unread, current, setCurrent }) {
   const minutes = timestamp && timestamp.getMinutes();
 
   return (
-    <Box current={current} onClick={() => setCurrent(id)}>
+    <Box current={current} onClick={() => setCurrent(user)}>
       <Icon theme={theme}>{ initials }</Icon>
       <Info>
         <Main>

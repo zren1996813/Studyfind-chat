@@ -49,6 +49,8 @@ function StartChat({ data }) {
                 unread: false,
                 last: {}
               });
+
+              setActive(false);
             } else {
               alert('chat with this user exists');
             }

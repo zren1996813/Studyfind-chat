@@ -15,8 +15,8 @@ function Message({ theme, time, text, user, data }) {
   const minutes = timestamp.getMinutes();
 
   return (
-    <Box you={user === data.name}>
-      <Text theme={theme} you={user === data.name}>{ text }</Text>
+    <Box you={user === data.email}>
+      <Text theme={theme} you={user === data.email}>{ text }</Text>
       <Time>{hours}:{minutes}</Time>
     </Box>
   )

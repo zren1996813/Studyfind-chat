@@ -25,7 +25,7 @@ function Conversation({ data, current }) {
 
       const messages = []
       messageData.forEach(doc => messages.push(doc.data()));
-      setChat({ ...data.chats[current], messages });
+      setChat({ ...data.chats.find(chat => chat.user === current), messages });
 
     });
   }, [])
@@ -44,7 +44,7 @@ function Conversation({ data, current }) {
     const message = {
       text: input.trim(),
       time: firebase.firestore.Timestamp.fromDate(new Date()),
-      user: data.name,
+      user: data.email,
     }
 
     firestore.collection("users").doc(current).collection("chats").doc(data.email).update({
@@ -53,8 +53,8 @@ function Conversation({ data, current }) {
       messages: []
     })
 
-    firestore.collection("users").doc(data.email).collection("chats").doc(current).set({
-      unread: true,
+    firestore.collection("users").doc(data.email).collection("chats").doc(current).update({
+      unread: false,
       last: message,
       messages: []
     })
@@ -164,7 +164,7 @@ const Flag = styled.img`
 
 const Messages = styled.div`
   height: 100%;
-  padding: 0 10px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   grid-gap: 5px;
@@ -174,7 +174,6 @@ const Messages = styled.div`
   }
 
   background: ${props => colors[props.theme]};
-
   background: white;
 `
 
