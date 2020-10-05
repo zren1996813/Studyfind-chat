@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import ChatItem from './ChatItem'
 import ChatNew from './ChatNew'
 
-function ChatList({ data, selected, setSelected }) {
+function ChatList({ data, selected, loading, setSelected }) {
   return (
     <List>
-      { data.chats.map(chat => <ChatItem active={chat.user === selected} onClick={() => setSelected(chat.user)} {...chat} />) }
+      { data.chats.map(chat => <ChatItem active={chat.user === selected} onClick={() => !loading && setSelected(chat.user)} {...chat} />) }
       <ChatNew data={data} />
     </List>
   )

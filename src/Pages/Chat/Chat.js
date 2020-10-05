@@ -8,15 +8,18 @@ import { auth, firestore } from 'fire';
 
 function Chat({ data }) {
   const [selected, setSelected] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if(selected) firestore.collection("users").doc(data.email).collection("chats").doc(selected).update({ unread: false })
   }, [selected]);
 
+
+
   return (
     <Main>
-      <ChatList data={data} selected={selected} setSelected={setSelected} />
-      <ChatText data={data} selected={selected} />
+      <ChatList data={data} selected={selected} loading={loading} setSelected={setSelected} />
+      <ChatText data={data} selected={selected} loading={loading} setLoading={setLoading} />
     </Main>
   );
 }

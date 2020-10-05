@@ -17,41 +17,49 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function ChatText({ data, selected }) {
+function ChatText({ data, selected, loading, setLoading }) {
   const [chat, setChat] = useState();
-  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   const selectedChat = data.chats.find(chat => chat.user === selected);
 
   useEffect(() => {
-    if(selected) {
-      setLoading(true);
-      firestore.collection("users").doc(data.email).collection("chats").doc(selected).collection("messages").orderBy("timestamp")
-      .onSnapshot(async messagesData => {
-
-        const messages = [];
-        messagesData.forEach(doc => messages.push(doc.data()));
-        setChat({ ...selectedChat, messages });
-
-      });
-    }
+    if(selected) setupObserver();
   }, [selected])
+
+
+  const setupObserver = async () => {
+    setChat({ ...chat });
+    setLoading(true);
+    const observer = firestore.collection("users").doc(data.email).collection("chats").doc(selected).collection("messages").orderBy("timestamp")
+    .onSnapshot(messagesData => {
+
+      const messages = [];
+      messagesData.forEach(doc => messages.push(doc.data()));
+      setMessages(messages);
+
+    });
+  }
 
 
   useEffect(() => {
     if(chat) {
-      setLoading(false);
       const messagesDiv = document.getElementById("messages");
-      if(messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      if(messagesDiv) messagesDiv.scrollIntoView();
     }
-  }, [chat])
+  })
+
+  useEffect(() => {
+    setLoading(false);
+  }, [messages])
 
 
   return selected ? (
     <Convo>
       <ChatHeader email={data.email} {...selectedChat} />
-      <Messages id="messages" theme={selectedChat.theme}>
-        { !loading ? chat && chat.messages.map(message => <Message theme={selectedChat.theme} data={data} {...message} />) : <Box><Spinner color="#377dff" /></Box> }
+      <Messages theme={selectedChat.theme}>
+        { !loading ? (messages && messages.map(message => <Message theme={selectedChat.theme} data={data} {...message} />)) : <Box><Spinner color="#377dff" /></Box> }
+        <span id="messages"></span>
       </Messages>
       <ChatInput email={data.email} selected={selected} />
     </Convo>

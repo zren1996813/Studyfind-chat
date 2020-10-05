@@ -26,7 +26,6 @@ function ChatMessage({ theme, timestamp, text, sender, data }) {
 const Time = styled.div`
   display: none;
   font-size: 0.7rem;
-  margin-bottom: 5px;
   color: gray;
   font-weight: 500;
   text-align: right;
@@ -42,8 +41,9 @@ const Box = styled.div`
   max-width: 80%;
   align-self: ${props => props.you ? 'flex-end' : 'flex-start'};
   display: flex;
-  flex-direction: column;
-  align-items: ${props => props.you ? 'flex-end' : 'flex-start'};
+  flex-direction: ${props => props.you ? 'row-reverse' : 'row'};
+  grid-gap: 5px;
+  align-items: center;
   padding-bottom: 5px;
 
   &:hover ${Time} {

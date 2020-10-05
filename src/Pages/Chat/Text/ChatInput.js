@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { firestore } from 'fire';
@@ -10,6 +10,10 @@ function ChatInput({ email, selected }) {
   const handleEnterClick = event => {
     if(event.keyCode === 13) handleSendMessage();
   }
+
+  useEffect(() => {
+    setInput('');
+  }, [selected])
 
   const handleSendMessage = () => {
     if(!input) return;

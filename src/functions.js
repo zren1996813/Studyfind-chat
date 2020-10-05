@@ -15,9 +15,9 @@ function getUser() {
 }
 
 function formatTime(time) {
-  const timestamp = time.toDate();
+  if(!time) return '';
 
-  if(!timestamp) return '';
+  const timestamp = time.toDate();
 
   const rawHours = timestamp && timestamp.getHours();
   const rawMinutes = timestamp && timestamp.getMinutes();
@@ -30,9 +30,9 @@ function formatTime(time) {
 }
 
 function formatDate(date) {
-  const timestamp = date.toDate();
+  if(!date) return '';
 
-  if(!timestamp) return '';
+  const timestamp = date.toDate();
 
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th', 'th', 'st'];
