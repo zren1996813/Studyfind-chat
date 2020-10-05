@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components'
-import ChatBox from './ChatBox'
-import StartChat from './StartChat'
+import ChatItem from './ChatItem'
+import ChatNew from './ChatNew'
 
-function ChatList({ data, current, setCurrent }) {
+function ChatList({ data, selected, setSelected }) {
   return (
     <List>
-      { data.chats.map(item => <ChatBox current={item.user === current} setCurrent={setCurrent} {...item} />) }
-      <StartChat data={data} />
+      { data.chats.map(chat => <ChatItem active={chat.user === selected} onClick={() => setSelected(chat.user)} {...chat} />) }
+      <ChatNew data={data} />
     </List>
   )
 }
@@ -15,7 +15,7 @@ function ChatList({ data, current, setCurrent }) {
 const List = styled.div`
   overflow-y: scroll;
   height: 100%;
-  min-width: 325px;
+  width: 500px;
   border-right: 1px solid rgb(238, 238, 243);
 `
 

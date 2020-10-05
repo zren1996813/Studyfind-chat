@@ -11,7 +11,7 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function StartChat({ data }) {
+function ChatNew({ data }) {
   const [active, setActive] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -29,6 +29,8 @@ function StartChat({ data }) {
     const email1 = email.trim();
     const email2 = data.email.trim();
 
+    const themes = ['purple', 'blue', 'green', 'yellow', 'red'];
+
     if(email1 === email2) return;
     firestore.collection('users').doc(email1 || ' ').get()
     .then(snapshot => {
@@ -42,17 +44,25 @@ function StartChat({ data }) {
               firestore.collection('users').doc(email1).collection('chats').doc(email2).set({
                 name: data.name,
                 language: 'english',
-                theme: 'blue',
+                theme: themes[Math.floor((Math.random() * 5))],
                 unread: false,
-                last: {}
+                last: {
+                  text: '',
+                  sender: '',
+                  timestamp: ''
+                }
               })
 
               firestore.collection('users').doc(email2).collection('chats').doc(email1).set({
                 name,
                 language,
-                theme: 'red',
+                theme: themes[Math.floor((Math.random() * 5))],
                 unread: false,
-                last: {}
+                last: {
+                  text: '',
+                  sender: '',
+                  timestamp: ''
+                }
               });
 
               setActive(false);
@@ -79,13 +89,13 @@ function StartChat({ data }) {
   )
 
   const ACTIVE = (
-    <Box>
+    <ActiveBox>
       <Input id="new" placeholder="Type email here..." value={email} onChange={e => setEmail(e.target.value)} />
       <Buttons>
         <Button primary onClick={handleNew}> Add </Button>
         <Button onClick={handleCancel}> Cancel </Button>
       </Buttons>
-    </Box>
+    </ActiveBox>
   )
 
   return active ? ACTIVE : DEFAULT;
@@ -94,12 +104,10 @@ function StartChat({ data }) {
 const Box = styled.div`
   cursor: pointer;
   height: 80px;
-  background: white;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 0 20px;
-  background: white;
   border-bottom: 1px solid rgb(238, 238, 243);
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -110,6 +118,19 @@ const Box = styled.div`
 
   ${props => props.current && `background: rgb(0, 0, 0, 0.03);`}
 `
+
+const ActiveBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  height: 80px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid rgb(238, 238, 243);
+`;
 
 const Info = styled.div`
   padding: 10px;
@@ -141,18 +162,6 @@ const Name = styled.div`
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-`
-
-const Unread = styled.span`
-  color: #377dff;
-  font-size: 0.5rem;
-  margin: 0 5px;
-`
-
-const Date = styled.span`
-  margin-left: auto;
-  font-size: 0.75rem;
-  color: darkgrey;
 `
 
 const Icon = styled.div`
@@ -200,4 +209,4 @@ const Button = styled.button`
   `};
 `;
 
-export default StartChat
+export default ChatNew;

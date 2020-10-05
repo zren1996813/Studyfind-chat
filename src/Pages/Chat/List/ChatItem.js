@@ -1,5 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+
+import { formatTime } from 'functions';
 
 const colors = {
   green: 'rgb(40, 162, 111)',
@@ -9,22 +11,19 @@ const colors = {
   yellow: 'rgb(239, 131, 23)',
 }
 
-function ChatBox({ user, name, last, theme, unread, current, setCurrent }) {
-  const initials = name && name.split(' ').map(word => word[0].toUpperCase())
+function ChatItem({ user, name, last, theme, unread, active, ...rest }) {
+  const initials = name && name.split(' ').map(word => word[0].toUpperCase());
   const UNREAD = unread && <Unread className="fa fa-circle"></Unread>
 
-  const timestamp = last.time && last.time.toDate();
-  const hours = timestamp && timestamp.getHours();
-  const minutes = timestamp && timestamp.getMinutes();
+  const time = formatTime(last.timestamp);
 
   return (
-    <Box current={current} onClick={() => setCurrent(user)}>
+    <Box active={active} {...rest}>
       <Icon theme={theme}>{ initials }</Icon>
       <Info>
         <Main>
-          <Name> {name} </Name>
-          { UNREAD }
-          <Date>{hours}:{minutes}</Date>
+          <Name> {name} </Name> { UNREAD }
+          <Date>{ time }</Date>
         </Main>
         <Last theme={theme}> {last.text || <i>Start your new chat from here</i>} </Last>
       </Info>
@@ -35,12 +34,10 @@ function ChatBox({ user, name, last, theme, unread, current, setCurrent }) {
 const Box = styled.div`
   cursor: pointer;
   height: 80px;
-  background: white;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 0 20px;
-  background: white;
   border-bottom: 1px solid rgb(238, 238, 243);
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -49,7 +46,7 @@ const Box = styled.div`
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none;
 
-  ${props => props.current && `background: rgb(0, 0, 0, 0.03);`}
+  ${props => props.active && `background: rgb(0, 0, 0, 0.03);`}
 `
 
 const Info = styled.div`
@@ -125,4 +122,4 @@ const Icon = styled.div`
   }};
 `
 
-export default ChatBox
+export default ChatItem;

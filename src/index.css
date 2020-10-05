@@ -19,6 +19,9 @@ code {
 html {
     overflow: hidden;
     height: 100%;
+    /* color: white;
+    background: black;
+    border-color: rgb(255, 255, 255, 0.2); */
 }
 
 body {

@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { formatTime, formatDate } from 'functions';
+
 const colors = {
   red: 'rgb(227, 119, 129)',
   green: 'rgb(40, 162, 111)',
@@ -9,22 +11,44 @@ const colors = {
   yellow: 'rgb(239, 131, 23)'
 }
 
-function Message({ theme, time, text, user, data }) {
-  const timestamp = time.toDate();
-  const hours = timestamp.getHours();
-  const minutes = timestamp.getMinutes();
+function ChatMessage({ theme, timestamp, text, sender, data }) {
+  const time = formatTime(timestamp);
+  const date = formatDate(timestamp);
 
   return (
-    <Box you={user === data.email}>
-      <Text theme={theme} you={user === data.email}>{ text }</Text>
-      <Time>{hours}:{minutes}</Time>
+    <Box you={sender === data.email}>
+      <Text theme={theme} you={sender === data.email}>{ text }</Text>
+      <Time>{ time }</Time>
     </Box>
   )
 }
 
+const Time = styled.div`
+  display: none;
+  font-size: 0.7rem;
+  margin-bottom: 5px;
+  color: gray;
+  font-weight: 500;
+  text-align: right;
+
+  &:hover {
+    display: block;
+  }
+
+  cursor: default;
+`;
+
 const Box = styled.div`
   max-width: 80%;
   align-self: ${props => props.you ? 'flex-end' : 'flex-start'};
+  display: flex;
+  flex-direction: column;
+  align-items: ${props => props.you ? 'flex-end' : 'flex-start'};
+  padding-bottom: 5px;
+
+  &:hover ${Time} {
+    display: block;
+  }
 `;
 
 const Text = styled.div`
@@ -33,6 +57,7 @@ const Text = styled.div`
   font-size: 0.9rem;
   padding: 8px 10px;
   border-radius: 5px;
+
 
   color: ${props => colors[props.theme]};
 
@@ -46,20 +71,10 @@ const Text = styled.div`
     }
   }};
 
+  cursor: default;
+
   color: ${props => !props.you && 'rgb(120, 120, 120)'};
   background: ${props => !props.you && 'rgb(245, 245, 245)'};
 `
 
-const User = styled.div`
-
-`;
-
-const Time = styled.div`
-  font-size: 0.7rem;
-  margin-bottom: 10px;
-  color: gray;
-  font-weight: 500;
-  text-align: right;
-`;
-
-export default Message
+export default ChatMessage;

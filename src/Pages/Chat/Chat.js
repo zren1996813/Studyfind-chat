@@ -1,20 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
-import Conversation from './Conversation'
-import ChatList from './ChatList'
+import ChatText from './Text/ChatText'
+import ChatList from './List/ChatList'
 
 import { auth, firestore } from 'fire';
 
 function Chat({ data }) {
-  const [current, setCurrent] = useState((data && data.chats && data.chats[0]) ? data.chats[0].user : ' ');
+  const [selected, setSelected] = useState('');
+
+  useEffect(() => {
+    if(selected) firestore.collection("users").doc(data.email).collection("chats").doc(selected).update({ unread: false })
+  }, [selected]);
 
   return (
     <Main>
-      <ChatList data={data} current={current} setCurrent={setCurrent} />
-      <Conversation current={current} data={data} />
+      <ChatList data={data} selected={selected} setSelected={setSelected} />
+      <ChatText data={data} selected={selected} />
     </Main>
-  )
+  );
 }
 
 const Header = styled.header`
