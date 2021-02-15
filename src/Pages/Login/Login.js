@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import firebase from "../../Services/firebase";
 import {Card} from 'react-bootstrap';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Header from '../../Components/Header'
+import Header from '../../Components/Header';
+import { auth } from 'firebase'
 
 function Login({ history }) {
   const [inputs, setInputs] = useState({
@@ -10,6 +11,48 @@ function Login({ history }) {
     password: '',
     name: ''
   });
+  const signInWithFacebook = event => {
+    event.preventDefault();
+    var provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+    .then(data => {
+        if (data.additionalUserInfo.isNewUser){
+            firebase.firestore().collection('users')
+                .add({
+                    name: data.additionalUserInfo.profile.name,
+                    id: data.user.uid,
+                    URL:'',
+                    messages:[{notificationId:"", number:0}]
+                })
+        }
+        history.push('/chat');
+      })
+      .catch(error => {
+          alert("Eroor occured: " + error.message);
+      })
+
+  }
+  const signInWithGoogle= event => {
+    event.preventDefault();
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+    .then(data => {
+        if (data.additionalUserInfo.isNewUser){
+            firebase.firestore().collection('users')
+                .add({
+                    name: data.additionalUserInfo.profile.name,
+                    id: data.user.uid,
+                    URL:'',
+                    messages:[{notificationId:"", number:0}]
+                })
+        }
+        alert('Sign in successful!')
+        history.push('/chat');
+      })
+      .catch(error => {
+          alert("Eroor occured: " + error.message);
+      })
+  }
 
   const [error, setError] = useState('');
 
@@ -55,8 +98,18 @@ function Login({ history }) {
           onChange={handleInput}
         />
       </div>
+      <div>
       <button onClick={handleSubmit}>Submit!</button>
-      {error && <div style={{ color: 'red' }}>{ error }</div>}
+      </div>
+      <div>
+      <button onClick={signInWithGoogle}> Sign in with Google</button>
+      </div>
+      <div>
+      <button onClick={signInWithFacebook}>Sign in with Facebook</button>
+      </div>
+      <div>
+      <button onClick={() => auth.signOut()}>Sign out</button>
+      </div>
     </form>
     </Card>
     </div>
